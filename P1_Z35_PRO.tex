@@ -1,0 +1,156 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{polski}
+\usepackage{indentfirst}
+\usepackage[polish]{babel}
+\usepackage{float}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc} % tu mo¿e byæ konieczne zast¹pienie "cp1250" przez np. "utf8"
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{geometry}
+\geometry{hdivide={2cm,*,2cm}}
+\geometry{vdivide={2cm,*,2cm}}
+\usepackage{titlesec}
+\titlespacing{\section}{0ex}{1ex}{1ex} % zmniejszenie odstêpów przed i po tytule rozdzia³u...
+\titleformat*{\section}{\sf\large\bfseries} % i zmiana kroju czcionki
+\titlespacing{\subsection}{0ex}{0.75ex}{0.75ex} % % j/w dla tytu³ów podrozdzia³ów
+\titleformat*{\subsection}{\sf\bfseries}
+
+% Zmniejszenie odstêpów przed i za wzorami wystawionymi
+\AtBeginDocument{
+\addtolength{\abovedisplayskip}{-1ex}
+\addtolength{\abovedisplayshortskip}{-1ex}
+\addtolength{\belowdisplayskip}{-1ex}
+\addtolength{\belowdisplayshortskip}{-1ex}
+}
+% Kilka przydatnych definicji
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+\newcommand{\razy}{\hspace{-0.5ex}\times\hspace{-0.5ex}} % mo¿e siê przydaæ
+
+
+\begin{document}
+
+\def\tablename{Tabela} % bez tej linii nazw¹ tabeli by³aby "Tablica"
+
+
+\noindent
+\textbf{Piotr Rowicki 320730 grupa 4 projekt 1 zadanie 35}
+
+
+\section*{Wstęp} % section* oznacza rozdzia³ bez numeru (zasadne przy braku spisu treci)
+Celem zadania jest przybliżanie całek podwójnych na obszarze $D$ będącym prostokątem. Aby go osiągnąć zastosujemy dwie kwadratury: złożoną kwadraturę trapezów po zmiennej $x$ opartą na $n$ podprzedziałach i złożoną kwadraturę Simosona po zmiennej $y$ opartą na $m$ podprzedziałach. Optymalna proporcja $n$ do $m$ wynosi około 40:1. Jeżeli jest spełniona, jesteśmy w stanie osiągnąć dokładniejszy wynik, nie zwiększając ilości podprzedziałów. Całki z prostych funkcji metoda przybliża w miarę szybko, bardziej wymagające  natomiast, wymagają znacznie więcej zasobów.
+
+
+\section*{Wyprowadzenie metody}
+Niech D=$[a,b]\times[c,d]$ będzie obszarem całkowania a $f:[a,b]\times[c,d]\xrightarrow{} R$ funkcją całkowalną, wówczas całka, której przybliżenia szukamy ma postać:
+\begin{equation*} \label{eu_eqn}
+\int_{c}^{d} \left( \int_{a}^{b}f(x,y)dx\right)dy.
+\end{equation*}
+W ogólności na wynik nie wpływa kolejność całkowania, dlatego w celu ułatwienia obliczeń całka po zmiennej x będzie całką wewnętrzną. Zastosujmy dla niej złożoną kwadraturę trapezów, traktując zmienną y jako parametr i  w ten sposób otrzymamy:
+\begin{equation} \label{eu_eqn}
+\int_{c}^{d} \frac{H_1}{2}\left( f(a,y) + f(b,y)+ 2\sum_{i=1}^{n-1}f(a+i H_1,y) \right)dy,
+\end{equation}
+gdzie $H_1=\frac{b-a}{n}$.\\
+Pozostaje nam zastosować złożoną kwadraturę Simspona po zmiennej y. W wyniku tej operacji dostajemy:
+
+\begin{multline*} \label{eu_eqn}
+\frac{H_1 H_2}{6} \bigg( f(a,c) +f(a,d)+4\sum_{i=1}^{m}f(a,c+(2i-1) H_2)+2\sum_{i=1}^{m-1}f(a,c+2i H_2)+f(b,c) +f(b,d) \\
++4\sum_{i=1}^{m}f(b,c+(2i-1) H_2)+2\sum_{i=1}^{m-1}f(b,c+2i H_2)+
+2\sum_{i=1}^{n-1}f(a+i H_1,c)+2\sum_{i=1}^{n-1}f(a+i  H_1,d)\\
++8\sum_{i=1}^{n-1}\sum_{j=1}^{m}f(a+i H_1,c+(2i-1)H_2)+4\sum_{i=1}^{n-1}\sum_{j=1}^{m-1}f(a+i H_1,c+2i H_2) \bigg),                                                                 
+\end{multline*}
+gdzie $H_2=\frac{d-c}{2m}$.
+\\ Metoda przybliża szukaną całkę, wyznaczając wartość powyższej sumy.
+
+
+
+\section*{Eksperymenty numeryczne}
+Wiemy, że błąd naszej metody zależy od błędów obu zastosowanych kwadratur. Te z kolei  zależą od  ilości podprzedziałów danej kwadratury, których zwiększenie powoduje wzrost kosztu obliczeniowego. Aby zminimalizować koszty możemy ograniczyć sumaryczną liczność podprzedziałów, i rozłożyć je pomiędzy kwadratury, tak, aby błąd był jak najmniejszy.\\
+W tabeli 1 przedstawione zostały błędy przybliżenia   całek podwójnych z kilku funkcji dwóch zmiennych  $f(x,y)$ na obszarach [0,1]$\times[0,1]$, dzieląc przedziały zmiennej $x$ na $n$ podprzedziałów a przedziały zmiennej $y$ na $m$ podprzedziałów. Liczby te spełniają warunek $m+n=1000$, gdzie 1000 to arbitralnie ustalony limit. Wartość $n$ na początku będzie rosła liniowo, aż do wartości 800.  Jeżeli
+to nie wystarczy do wyciągnięcia wniosków, zbliżać się będzie do 1000.
+\par Jak widać, zdecydowanie więcej podprzedziałów można przeznaczyć na kwadraturę mniej dokładną i uzyskać przy tym wynik bardziej dokładny. Niestety, jak pokazują przykłady  z tabeli 1, nie ma uniwersalnej proporcji $n$ do $m$ dla której błąd jest  najmniejszy. Możemy jednak przyjąć, że proporcja około 40:1 daje nam wystarczająco  zadowalające wyniki, aby stanowić w praktyce najbardziej optymalny stosunek.
+\begin{table}[H]
+\caption{\footnotesize ilość podprzedziałów złożonej kwadratury trapezów $n$, ilość podprzedziałów złożonej kwadratury Simpsona $m$, błąd przybliżenia całki $E(f)$ spełniający $E(f)=|I(f)-S(f)|$,  gdzie $I(f)$ - dokładna wartość całki, $S(f)$ - przybliżenie wyznaczone przez metodę z zadania}
+\centering
+
+\begin{tabular}{|C{ 20ex}|C{10ex}|C{10ex}|C{20ex}|C{10ex}|C{10ex}| } 
+\hline
+funkcja $f(x,y)$ & $n$ & $m$ & $E(f)$ \\
+
+\hline
+\multirow{12}{20em}{atan($xy$)}
+& 200 & 800 & 3.196$\razy10^{-7}$ \\ 
+& 400 & 600 & 7.991$\razy10^{-8}$\\ 
+& 600 & 800 & 3.552$\razy10^{-8}$ \\ 
+& 800 & 200 & 1.998$\razy10^{-8}$\\ 
+& 900 & 100 & 1.578$\razy10^{-8}$ \\ 
+& 950 & 50 & 1.413$\razy10^{-8}$ \\ 
+& 975 & 25 & 1.293$\razy10^{-8}$ \\ 
+& 985 & 15 & 9.199$\razy10^{-9}$ \\ 
+& 990 & 10 & 7.125$\razy10^{-9}$ \\ 
+& 993 & 7 & 7.127$\razy10^{-8}$ \\ 
+\hline
+\multirow{4}{20em}{3exp($x+y^2$)$xy$/7}
+& 200 & 800 & 2.555$\razy10^{-5}$ \\ 
+& 400 & 600 & 6.389$\razy10^{-6}$\\ 
+& 600 & 800 & 2.839$\razy10^{-6}$ \\ 
+& 800 & 200 & 1.597$\razy10^{-6}$\\ 
+& 900 & 100 & 3.155$\razy10^{-7}$ \\ 
+& 950 & 50 &  2.833$\razy10^{-7}$ \\ 
+& 975 & 25 & 2.713$\razy10^{-7}$ \\ 
+& 985 & 15 & 2.833$\razy10^{-7}$ \\ 
+\hline
+\multirow{4}{9em}{$2y^4+x^2y^2+6x^3$}
+& 200 & 800 & 1.556$\razy10^{-4}$ \\ 
+& 400 & 600 & 3.889$\razy10^{-5}$\\ 
+& 600 & 800 & 1.728$\razy10^{-5}$ \\ 
+& 800 & 200 & 9.722$\razy10^{-6}$\\ 
+& 900 & 100 & 1.921$\razy10^{-6}$ \\ 
+& 950 & 50 & 1.726$\razy10^{-6}$ \\ 
+& 975 & 25 & 1.679$\razy10^{-6}$ \\ 
+& 985 & 15 & 1.932$\razy10^{-6}$ \\ 
+\hline
+
+
+
+
+\end{tabular}
+
+\end{table}
+\par Ważne dla naszej metody jest to, jak szybko osiągnie zadaną poprawność. W tabeli 2 przedstawiono sumę  $n+m$ podprzedziałów obu kwadratur  dla której przybliżenie całki podwójnej z funkcji $f(x,y)$ na przedziale $[0,2]\razy[0,2]$ jest z błędem rzędu $10^{-9}$ i czas $t$ wykonania tej operacji.proporcja $n$ do $m$ wynosi 40:1.
+\par Jak widać, dla prostych funkcji uzyskanie rezultatu jest w miarę szybkie, dla bardziej wymagających   natomiast, stanowi to problem.
+\par 
+\par 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|C{ 30ex}|C{20ex}|C{20ex}|}
+    \hline
+    funkcja $f(x,y)$ & $n + m$ & $t$\\
+         \hline
+          atan($xy$) & 8200  &0.0.019874\\
+         \hline
+        
+        3exp($x+y^2$)$xy$/7 & 262400 &19.621320\\
+         \hline
+        $2y^4+x^2y^2+6x^3$& 98400  &8.732748\\
+         \hline
+        sqrt($x^2+y^2)$ & 12300  &0.030007\\
+         \hline
+        2$y$sin($x$)+ $x$cos($2y$)& 16400  &0.069968\\
+         \hline
+         $x^2$/($y^2$+1) & 16400  &0.034005\\
+         \hline
+         
+    \end{tabular}
+    \caption{\footnotesize suma ilości podprzedziałów obu kwadratur $m+n$ dla której otrzymaliśmy szukaną poprawność, czas wykonoywania obliczeń $t$ w sekundach }
+    \label{tab:my_label}
+\end{table}
+
+\end{document}
